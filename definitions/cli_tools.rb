@@ -45,9 +45,9 @@ define :cli_tools, :extension => '.zip' do
       end
     end
     action 'nothing'
-    notifies :create, 'template[/etc/profile.d/ec2_tools.sh]]'
-    notifies :create, 'template[#{node["aws_developer_tools"]["aws_tools_credentials"]["location"]}]'
-    notifies :create, 'template[/etc/profile.d/#{params[:name]}.sh]'
+    notifies :create, 'template[/etc/profile.d/ec2_tools.sh]'
+    notifies :create, 'template[' + node[:aws_developer_tools][:aws_tools_credentials][:location] + ']'
+    notifies :create, 'template[/etc/profile.d/' + params[:name] + '.sh]'
     notifies :create, 'template[/etc/profile.d/aws_tools.sh]'
   end
 
