@@ -8,21 +8,21 @@ define :cli_tools, :extension => '.zip' do
     use_conditional_get !node['aws_developer_tools']['force_download?']
     use_etag true
     use_last_modified false
-    notify 'execute['cleanup old installs']'
+    notifes :run, 'execute['cleanup old installs']'
   end
   
   execute 'cleanup old installs' do
     cwd '/tmp'
     command "rm -rf #{params[:name]} && mkdir #{params[:name]}"
     action 'nothing'
-    notify 'execute['extract the aws tool']'
+    notifes :run, 'execute['extract the aws tool']'
   end
   
   execute 'extract the aws tool' do
     cwd "/tmp/#{params[:name]}"
     command "unzip -o ../#{params[:name] + params[:extension]}"
     action 'nothing'
-    notify 'ruby_block['copy the tools to the target directory']'
+    notifes :run, 'ruby_block['copy the tools to the target directory']'
   end
 
   ruby_block 'copy the tools to the target directory' do
