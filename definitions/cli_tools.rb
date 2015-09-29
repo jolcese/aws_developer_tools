@@ -45,23 +45,30 @@ define :cli_tools, :extension => '.zip' do
       end
     end
     action 'nothing'
+    notifies :create, 'template[/etc/profile.d/ec2_tools.sh]]'
+    notifies :create, 'template[#{node["aws_developer_tools"]["aws_tools_credentials"]["location"]}]'
+    notifies :create, 'template[/etc/profile.d/#{params[:name]}.sh]'
+    notifies :create, 'template[/etc/profile.d/aws_tools.sh]'
   end
 
-  if AwsDeveloperTools.type?(params[:name]) == :ec2
-    template '/etc/profile.d/ec2_tools.sh' do
-      mode 0755
-    end
-  else
-    template "#{node['aws_developer_tools']['aws_tools_credentials']['location']}" do
-      mode node['aws_developer_tools']['aws_tools_credentials']['permission']
-    end
-
-    template "/etc/profile.d/#{params[:name]}.sh" do
-      mode 0755
-    end
-
-    template '/etc/profile.d/aws_tools.sh' do
-      mode 0755
-    end
+  template '/etc/profile.d/ec2_tools.sh' do
+    mode 0755
+    not_if { AwsDeveloperTools.type?(params[:name]) != :ec2 }
   end
+
+  template "#{node['aws_developer_tools']['aws_tools_credentials']['location']}" do
+    mode node['aws_developer_tools']['aws_tools_credentials']['permission']
+    not_if { AwsDeveloperTools.type?(params[:name]) == :ec2 }
+  end
+
+  template "/etc/profile.d/#{params[:name]}.sh" do
+    mode 0755
+    not_if { AwsDeveloperTools.type?(params[:name]) !== :ec2 }
+  end
+
+  template '/etc/profile.d/aws_tools.sh' do
+    mode 0755
+    not_if { AwsDeveloperTools.type?(params[:name]) !== :ec2 }
+  end
+
 end
