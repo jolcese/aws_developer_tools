@@ -53,7 +53,7 @@ define :cli_tools, :extension => '.zip' do
 
   template '/etc/profile.d/ec2_tools.sh' do
     mode 0755
-    not_if { AwsDeveloperTools.type?(params[:name]) != :ec2 }
+    only_if { AwsDeveloperTools.type?(params[:name]) == :ec2 }
   end
 
   template "#{node['aws_developer_tools']['aws_tools_credentials']['location']}" do
