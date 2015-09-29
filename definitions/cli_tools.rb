@@ -63,12 +63,12 @@ define :cli_tools, :extension => '.zip' do
 
   template "/etc/profile.d/#{params[:name]}.sh" do
     mode 0755
-    not_if { AwsDeveloperTools.type?(params[:name]) !== :ec2 }
+    not_if { AwsDeveloperTools.type?(params[:name]) == :ec2 }
   end
 
   template '/etc/profile.d/aws_tools.sh' do
     mode 0755
-    not_if { AwsDeveloperTools.type?(params[:name]) !== :ec2 }
+    not_if { AwsDeveloperTools.type?(params[:name]) == :ec2 }
   end
 
 end
